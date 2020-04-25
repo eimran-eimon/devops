@@ -15,12 +15,14 @@ for server_ip in server_ips:
 
 	hostname = server_ip.split(', ')[0]
 	username = server_ip.split(', ')[1]
-	password = server_ip.split(', ')[2]
+	# password = server_ip.split(', ')[2]
+	key = paramiko.RSAKey.from_private_key_file("/home/eimon/.ssh/id_rsa")
 
-	client.connect(hostname=hostname, username=username, password=password)
+	client.connect(hostname=hostname, username=username, pkey=key)
 
 	for command in curl_commands:
 		print("=" * 50, command, "=" * 50)
 		stdin, stdout, stderr = client.exec_command(command)
 		print('Output from the remote server: \n' + stdout.read().decode())
+
 	client.close()
