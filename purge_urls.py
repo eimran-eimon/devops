@@ -13,21 +13,14 @@ for server_ip in server_ips:
 	client = paramiko.SSHClient()
 	client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-	hostname = server_ip.split(',')[0]
-	username = server_ip.split(',')[1]
-	password = server_ip.split(',')[2]
+	hostname = server_ip.split(', ')[0]
+	username = server_ip.split(', ')[1]
+	password = server_ip.split(', ')[2]
 
-	try:
-		client.connect(hostname=hostname, username=username, password=password)
-	except:
-		print("[!] Cannot connect to the SSH Server")
-		exit()
+	client.connect(hostname=hostname, username=username, password=password)
 
 	for command in curl_commands:
-		print("=" * 50, url, "=" * 50)
+		print("=" * 50, command, "=" * 50)
 		stdin, stdout, stderr = client.exec_command(command)
 		print('Output from the remote server: \n' + stdout.read().decode())
-		err = stderr.read().decode()
-		if err:
-			print("Error --> " + err)
 	client.close()
