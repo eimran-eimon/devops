@@ -24,7 +24,7 @@ for server_ip in server_ips:
 	hostname = server_ip.split(', ')[0]
 	username = server_ip.split(', ')[1]
 
-	key = paramiko.RSAKey.from_private_key_file("/home/eimon/.ssh/id_rsa")
+	key = paramiko.RSAKey.from_private_key_file("/home/ridi/.ssh/id_rsa")
 	server.connect(hostname=hostname, username=username, pkey=key)
 
 	stdin, stdout, stderr = server.exec_command('cat ~/Desktop/sample.txt')
@@ -32,7 +32,7 @@ for server_ip in server_ips:
 	# 192.168.0.1
 	# 192.168.0.2
 
-	container_ips = [lines.strip() for lines in stdout.read().decode("utf-8").strip().split("\n")]
+	container_ips = [lines for lines in stdout.read().decode("utf-8").strip().split("\n")]
 
 	for container_ip in container_ips:
 
@@ -46,7 +46,9 @@ for server_ip in server_ips:
 		for command in curl_commands:
 			print("=" * 50, command, "=" * 50)
 			stdin, stdout, stderr = container.exec_command(command)
-			print('Output from the remote server: \n' + stdout.read().decode())
+			print('Output from the remote server:')
+			for line in stdout.read().decode("utf-8").strip().split("\n"):
+				print(line)
 
 		container.close()
 
